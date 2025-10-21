@@ -1,8 +1,8 @@
 import { StrictMode } from 'react';
+import WebFont from 'webfontloader';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
-import WebFont from 'webfontloader';
 
 // Load fonts before rendering the app
 WebFont.load({
