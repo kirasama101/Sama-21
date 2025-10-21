@@ -6,8 +6,17 @@
 
   body,
   html,
-  #root {
+  #root,
+  * {
     font-family: 'Poppins', sans-serif !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  .timeline-title,
+  *[class*="title"] {
+    font-family: 'Great Vibes', cursive !important;
   }
 
   body {
@@ -15,13 +24,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overscroll-behavior: none;
-  }
-
-  h1,
-  h2,
-  h3,
-  .timeline-title {
-    font-family: 'Great Vibes', cursive !important;
   }
 
   * {
