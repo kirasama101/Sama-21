@@ -120,7 +120,7 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
 
           <div className="space-y-8 max-w-2xl mx-auto">
             <p className="font-body text-2xl sm:text-3xl md:text-4xl text-rose-800 leading-relaxed">
-              To more adventures, more laughter, and a lifetime of 'us.'
+              To more adventures, more laughter, and a lifetime of 'us'.
             </p>
 
             <p className="text-3xl sm:text-4xl md:text-5xl font-script text-rose-600 text-shadow-glow">
