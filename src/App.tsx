@@ -10,7 +10,7 @@ function App() {
 
   const handleMusicToggle = () => {
     if (!audioRef.current) {
-      audioRef.current = new Audio('https://music.apple.com/us/song/sweet-sign-off-vocal/1713401741?l=zh-Hans-CN');
+      audioRef.current = new Audio('https://www.youtube.com/watch?v=Zy6Tn77mDzA');
       audioRef.current.loop = true;
       audioRef.current.volume = 0.3;
     }
