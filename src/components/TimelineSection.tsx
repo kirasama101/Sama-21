@@ -20,11 +20,11 @@ const years: YearCard[] = [
   },
   {
     year: '2024',
-    text: 'You became my calm, my chaos, and my favorite notification.',
+    text: 'We made it through everything. Stronger. Closer. Us.',
   },
   {
     year: '2025',
-    text: 'We made it through everything. Stronger. Closer. Us.',
+    text: 'You became my calm, my chaos, and my favorite notification.',
   },
 ];
 
