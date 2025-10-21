@@ -3,12 +3,25 @@
 @tailwind utilities;
 
 @layer base {
+
+  body,
+  html,
+  #root {
+    font-family: 'Poppins', sans-serif;
+  }
+
   body {
     @apply overflow-x-hidden;
-    font-family: 'Poppins', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overscroll-behavior: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  .timeline-title {
+    font-family: 'Great Vibes', cursive;
   }
 
   * {
