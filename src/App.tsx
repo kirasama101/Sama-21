@@ -4,6 +4,7 @@ import TimelineSection from './components/TimelineSection';
 import LetterSection from './components/LetterSection';
 import ClosingSection from './components/ClosingSection';
 
+
 function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
