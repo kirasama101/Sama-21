@@ -8,11 +8,11 @@ interface YearCard {
 const years: YearCard[] = [
   {
     year: '2021',
-    text: 'The year we met — and I realized my life just got brighter.',
+    text: 'The year we met — when I still didn\'t realize how much you would mean to me.',
   },
   {
     year: '2022',
-    text: 'Distance, calls, and memes. Somehow, we made it look easy.',
+    text: 'We were just getting to know each other, discovering little things that made me smile.',
   },
   {
     year: '2023',
@@ -20,7 +20,7 @@ const years: YearCard[] = [
   },
   {
     year: '2024',
-    text: 'We made it through everything. Stronger. Closer. Us.',
+    text: 'We made it through everything.Closer. Together.',
   },
   {
     year: '2025',
