@@ -79,7 +79,7 @@ export default function LetterSection() {
             </p>
 
             <p className="font-body text-lg sm:text-xl md:text-2xl leading-relaxed">
-              Thank you for being my person.
+              Thank you for being there for me when I needed you.
             </p>
 
             <div className="pt-8 text-right">

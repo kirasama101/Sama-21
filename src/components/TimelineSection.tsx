@@ -180,6 +180,9 @@ export default function TimelineSection() {
               </div>
             </div>
           ))}
+          <p className="text-center font-body text-xl sm:text-2xl text-rose-800 mt-8">
+            and to much more years together
+          </p>
         </div>
       </div>
     </section>
