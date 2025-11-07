@@ -75,7 +75,7 @@ export default function LetterSection() {
             </p>
 
             <p className="font-body text-lg sm:text-xl md:text-2xl leading-relaxed">
-              You're 21 now — and somehow even more beautiful, fun, and real than the day we met.
+              You're the brightest star in my sky, and no matter how cloudy the sky gets, you'll always shine through.
             </p>
 
             <p className="font-body text-lg sm:text-xl md:text-2xl leading-relaxed">
