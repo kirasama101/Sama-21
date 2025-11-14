@@ -12,6 +12,14 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const confettiTriggered = useRef(false);
 
+  // Password challenge state
+  const [passwordInput, setPasswordInput] = useState('');
+  const [attempts, setAttempts] = useState(0);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [isShaking, setIsShaking] = useState(false);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -78,6 +86,52 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const funnyMessages = [
+    'Skill issue. Try again.',
+    'Nope. That\'s cooked.',
+    'Bro… 💀',
+    'That\'s not even close.',
+  ];
+
+  const handleUnlock = () => {
+    // Check if password is correct
+    if (passwordInput === '1234') {
+      setIsUnlocked(true);
+      setShowModal(true);
+      setErrorMessage('');
+      setPasswordInput('');
+      return;
+    }
+
+    // If incorrect, follow the 3-attempt logic
+    const newAttempts = attempts + 1;
+    setAttempts(newAttempts);
+
+    if (newAttempts < 3) {
+      // Show random funny message and shake
+      const randomMessage = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+      setErrorMessage(randomMessage);
+      setIsShaking(true);
+      setTimeout(() => setIsShaking(false), 500);
+    } else {
+      // Auto-unlock after 3 attempts
+      setIsUnlocked(true);
+      setShowModal(true);
+      setErrorMessage('');
+      setPasswordInput('');
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleUnlock();
+    }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <section
       ref={sectionRef}
@@ -136,8 +190,75 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
               Replay ✨
             </button>
           </div>
+
+          {/* Password Challenge */}
+          <div className="mt-16 max-w-md mx-auto">
+            <p className="font-body text-lg sm:text-xl text-rose-800 mb-4 text-center">
+              Enter the secret password…
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 items-center">
+              <input
+                type="text"
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                onKeyPress={handleKeyPress}
+                disabled={isUnlocked}
+                className={`flex-1 w-full sm:w-auto glass px-6 py-4 rounded-full text-rose-800 font-body text-lg
+                         placeholder-rose-400/60 focus:outline-none focus:ring-2 focus:ring-rose-400/50
+                         transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed
+                         ${isShaking ? 'animate-shake' : ''}`}
+                placeholder="Type here..."
+              />
+              <button
+                onClick={handleUnlock}
+                disabled={isUnlocked}
+                className="glass px-8 py-4 rounded-full text-rose-700 font-body font-semibold text-lg
+                         hover:bg-white/30 transition-all duration-300 shadow-lg hover:shadow-xl
+                         active:scale-95 min-h-[44px] min-w-[120px] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Unlock
+              </button>
+            </div>
+            {errorMessage && (
+              <p className="mt-3 text-center font-body text-rose-600 text-sm sm:text-base animate-fade-in">
+                {errorMessage}
+              </p>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
+          onClick={closeModal}
+        >
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+
+          {/* Modal Content */}
+          <div
+            className="relative glass rounded-3xl p-8 sm:p-10 max-w-md w-full shadow-2xl animate-scale-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="font-display text-3xl sm:text-4xl font-bold text-rose-700 text-center mb-4">
+              Unlocked 🎉
+            </h3>
+            <p className="font-body text-lg sm:text-xl text-rose-800 text-center mb-6 leading-relaxed">
+              Nice, you unlocked it. Now go drink water fr. 💀💧
+            </p>
+            <button
+              onClick={closeModal}
+              className="w-full glass px-6 py-3 rounded-full text-rose-700 font-body font-semibold text-lg
+                       hover:bg-white/30 transition-all duration-300 shadow-lg hover:shadow-xl
+                       active:scale-95"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
