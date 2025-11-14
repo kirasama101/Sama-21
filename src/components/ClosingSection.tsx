@@ -253,6 +253,7 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
             </h3>
             <p className="font-body text-lg sm:text-xl text-rose-800 text-center mb-6 leading-relaxed">
               Nice, you unlocked it.
+              <br />
               Now go drink some water. 🌚💧
             </p>
             <button
