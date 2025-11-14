@@ -87,9 +87,9 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
   };
 
   const funnyMessages = [
-    'Skill issue. Try again.',
-    'Nope. That\'s cooked.',
-    'Bro… 💀',
+    'NUH-UH!',
+    'Nope.',
+    '💀',
     'That\'s not even close.',
   ];
 
