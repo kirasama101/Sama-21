@@ -103,7 +103,7 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
       return;
     }
 
-    // If incorrect, follow the 3-attempt logic
+    // Otherwise, continue with the 3-attempt logic
     const newAttempts = attempts + 1;
     setAttempts(newAttempts);
 
@@ -235,11 +235,17 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
           onClick={closeModal}
         >
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-md" />
 
           {/* Modal Content */}
           <div
-            className="relative glass rounded-3xl p-8 sm:p-10 max-w-md w-full shadow-2xl animate-scale-in"
+            className="relative rounded-3xl p-8 sm:p-10 max-w-md w-full shadow-2xl animate-scale-in"
+            style={{
+              background: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              border: '1px solid rgba(255, 255, 255, 0.5)',
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="font-display text-3xl sm:text-4xl font-bold text-rose-700 text-center mb-4">
