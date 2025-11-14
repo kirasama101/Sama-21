@@ -252,7 +252,8 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
               Yaay! 🎉
             </h3>
             <p className="font-body text-lg sm:text-xl text-rose-800 text-center mb-6 leading-relaxed">
-              Nice, you unlocked it. Now go drink some water. 🌚💧
+              Nice, you unlocked it.
+              Now go drink some water. 🌚💧
             </p>
             <button
               onClick={closeModal}
