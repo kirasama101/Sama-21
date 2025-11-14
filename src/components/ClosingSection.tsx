@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface ClosingSectionProps {
   onConfetti: () => void;
@@ -9,8 +10,20 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [sparkles, setSparkles] = useState<Array<{ id: number; x: number; y: number; delay: number; duration: number }>>([]);
   const [animationKey, setAnimationKey] = useState(0);
-  const sectionRef = useRef<HTMLElement>(null);
+  const [shaken, setShaken] = useState(false);
+  const shakePrompt = useRef<string>(
+    (() => {
+      const prompts = [
+        'Shake your phone for a surprise.',
+        'Shake your phone like you’re rebooting a Nokia.',
+        'Go on… shake it… I dare you.',
+      ];
+      return prompts[Math.floor(Math.random() * prompts.length)];
+    })()
+  );
+  const sectionRef = useRef<HTMLElement | null>(null);
   const confettiTriggered = useRef(false);
+  const shakeTriggered = useRef(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -78,11 +91,66 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  useEffect(() => {
+    let lastX = 0;
+    let lastY = 0;
+    let lastZ = 0;
+
+    const handleMotion = (event: DeviceMotionEvent) => {
+      const acceleration = event.accelerationIncludingGravity;
+      if (!acceleration || shakeTriggered.current) return;
+
+      const { x = 0, y = 0, z = 0 } = acceleration;
+      const delta = Math.abs(x - lastX) + Math.abs(y - lastY) + Math.abs(z - lastZ);
+
+      if (delta > 35 && !shakeTriggered.current) {
+        shakeTriggered.current = true;
+        setShaken(true);
+        setTimeout(() => setShaken(false), 1000);
+      }
+
+      lastX = x;
+      lastY = y;
+      lastZ = z;
+    };
+
+    const enableMotionListener = async () => {
+      try {
+        if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+          const permission = await DeviceMotionEvent.requestPermission();
+          if (permission !== 'granted') {
+            return;
+          }
+        }
+      } catch {
+        return;
+      }
+
+      window.addEventListener('devicemotion', handleMotion);
+    };
+
+    enableMotionListener();
+
+    return () => {
+      window.removeEventListener('devicemotion', handleMotion);
+    };
+  }, []);
+
   return (
-    <section
+    <motion.section
       ref={sectionRef}
       data-section="closing"
       className="relative min-h-screen flex items-center justify-center py-20 px-6 bg-gradient-to-b from-pink-200 via-rose-200 to-pink-300 overflow-hidden"
+      animate={
+        shaken
+          ? {
+            x: [0, -15, 15, -10, 10, -5, 5, 0],
+            y: [0, -10, 10, -6, 6, -3, 3, 0],
+            rotate: [0, -2, 2, -1, 1, 0],
+          }
+          : {}
+      }
+      transition={{ duration: 0.8, ease: 'easeInOut' }}
     >
       {sparkles.map((sparkle) => (
         <div
@@ -137,7 +205,11 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
             </button>
           </div>
         </div>
+        <p className="mt-8 text-center text-base sm:text-lg text-rose-900/80">
+          👉 {shakePrompt.current()}
+          <span className="block text-xs text-rose-900/60 mt-1">I swear it’s not romantic.</span>
+        </p>
       </div>
-    </section>
+    </motion.section>
   );
 }
