@@ -14,11 +14,108 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
 
   // Password challenge state
   const [passwordInput, setPasswordInput] = useState('');
-  const [attempts, setAttempts] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
+  const [wrongAttempts, setWrongAttempts] = useState(0);
+  const [showHint, setShowHint] = useState(false);
+
+  // Modal state
+  const [showForeverMessage, setShowForeverMessage] = useState(false);
+  const [noButtonMessage, setNoButtonMessage] = useState('');
+
+  const wrongPasswordMessages = [
+    'nah try again 💀',
+    'that\'s not the right option 😭',
+    'fake button btw',
+    'I\'ll wait…',
+  ];
+
+  const noButtonMessages = [
+    'nah try again 💀',
+    'that\'s not the right option 😭',
+    'fake button btw',
+    'I\'ll wait…',
+  ];
+
+  const sendEmail = async (subject: string, message: string) => {
+    try {
+      await fetch('/api/sendEmail', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ subject, message }),
+      });
+    } catch (error) {
+      console.error('Failed to send email:', error);
+    }
+  };
+
+  const handleUnlock = async () => {
+    if (!passwordInput.trim()) {
+      return;
+    }
+
+    // Case-insensitive check for "sama"
+    if (passwordInput.toLowerCase().trim() === 'sama') {
+      // Correct password
+      setIsUnlocked(true);
+      setErrorMessage('');
+      setPasswordInput('');
+      setWrongAttempts(0);
+      setShowHint(false);
+
+      // Send email
+      await sendEmail('Correct password', 'Correct password entered: sama');
+
+      // Open modal
+      setShowModal(true);
+      return;
+    }
+
+    // Wrong password
+    const newAttempts = wrongAttempts + 1;
+    setWrongAttempts(newAttempts);
+
+    // Show hint after 3 wrong attempts
+    if (newAttempts >= 3) {
+      setShowHint(true);
+    }
+
+    const randomMessage = wrongPasswordMessages[Math.floor(Math.random() * wrongPasswordMessages.length)];
+    setErrorMessage(randomMessage);
+    setIsShaking(true);
+    setTimeout(() => setIsShaking(false), 500);
+    setPasswordInput('');
+
+    // Send email
+    await sendEmail('Wrong password attempt', `Wrong password: ${passwordInput}`);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleUnlock();
+    }
+  };
+
+  const handleYes = async () => {
+    // Send email
+    await sendEmail('YES pressed', 'She pressed YES 💖');
+
+    // Fade screen dark and show forever message
+    setShowForeverMessage(true);
+  };
+
+  const handleNo = async () => {
+    // Send email
+    await sendEmail('NO pressed', 'She pressed NO 😭');
+
+    // Show random message under popup
+    const randomMessage = noButtonMessages[Math.floor(Math.random() * noButtonMessages.length)];
+    setNoButtonMessage(randomMessage);
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -86,52 +183,6 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const funnyMessages = [
-    'NUH-UH!',
-    'Nope.',
-    '💀',
-    'That\'s not even close.',
-  ];
-
-  const handleUnlock = () => {
-    // Check if password is correct
-    if (passwordInput === '1234') {
-      setIsUnlocked(true);
-      setShowModal(true);
-      setErrorMessage('');
-      setPasswordInput('');
-      return;
-    }
-
-    // Otherwise, continue with the 3-attempt logic
-    const newAttempts = attempts + 1;
-    setAttempts(newAttempts);
-
-    if (newAttempts < 3) {
-      // Show random funny message and shake
-      const randomMessage = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
-      setErrorMessage(randomMessage);
-      setIsShaking(true);
-      setTimeout(() => setIsShaking(false), 500);
-    } else {
-      // Auto-unlock after 3 attempts
-      setIsUnlocked(true);
-      setShowModal(true);
-      setErrorMessage('');
-      setPasswordInput('');
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleUnlock();
-    }
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-  };
-
   return (
     <section
       ref={sectionRef}
@@ -193,9 +244,9 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
 
           {/* Password Challenge */}
           <div className="mt-16 max-w-md mx-auto">
-            <p className="font-body text-lg sm:text-xl text-rose-800 mb-4 text-center">
-              Enter the secret password…
-            </p>
+            <h2 className="font-body text-2xl sm:text-3xl font-semibold text-rose-800 mb-6 text-center">
+              Final challenge: Something I love ❤️
+            </h2>
             <div className="flex flex-col sm:flex-row gap-3 items-center">
               <input
                 type="text"
@@ -207,7 +258,7 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
                          placeholder-rose-400/60 focus:outline-none focus:ring-2 focus:ring-rose-400/50
                          transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed
                          ${isShaking ? 'animate-shake' : ''}`}
-                placeholder="Type here..."
+                placeholder="Type your answer here..."
               />
               <button
                 onClick={handleUnlock}
@@ -224,46 +275,70 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
                 {errorMessage}
               </p>
             )}
+            {showHint && (
+              <p className="mt-3 text-center font-body text-rose-700 text-base sm:text-lg font-semibold animate-fade-in">
+                💡 It starts with S
+              </p>
+            )}
           </div>
         </div>
       </div>
 
+      {/* Forever Message Overlay */}
+      {showForeverMessage && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/90 transition-opacity duration-1000 animate-fade-in" />
+          <div className="relative z-10 text-center animate-cinematic-fade-in">
+            <h2 className="font-display text-5xl sm:text-7xl md:text-8xl font-bold text-white text-shadow-glow px-4">
+              Forever starts today.
+            </h2>
+          </div>
+        </div>
+      )}
+
       {/* Modal */}
       {showModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
-          onClick={closeModal}
-        >
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-md" />
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-md transition-opacity duration-300"
+            onClick={(e) => e.stopPropagation()}
+          />
 
           {/* Modal Content */}
           <div
-            className="relative rounded-3xl p-8 sm:p-10 max-w-md w-full shadow-2xl animate-scale-in"
-            style={{
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(16px)',
-              WebkitBackdropFilter: 'blur(16px)',
-              border: '1px solid rgba(255, 255, 255, 0.5)',
-            }}
+            className="relative rounded-3xl p-8 sm:p-10 max-w-md w-full shadow-2xl animate-scale-in bg-gradient-to-br from-pink-100 to-rose-100 border-2 border-rose-300/50"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="font-display text-3xl sm:text-4xl font-bold text-rose-700 text-center mb-4">
-              Yaay! 🎉
+            <h3 className="font-display text-3xl sm:text-4xl font-bold text-rose-700 text-center mb-6">
+              Will you be mine forever?
             </h3>
-            <p className="font-body text-lg sm:text-xl text-rose-800 text-center mb-6 leading-relaxed">
-              I don't know what to say here🙂.
-              <br />
-              Anyway, go drink some water.🌚💧
-            </p>
-            <button
-              onClick={closeModal}
-              className="w-full glass px-6 py-3 rounded-full text-rose-700 font-body font-semibold text-lg
-                       hover:bg-white/30 transition-all duration-300 shadow-lg hover:shadow-xl
-                       active:scale-95"
-            >
-              Close
-            </button>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
+              <button
+                onClick={handleYes}
+                className="glass px-8 py-4 rounded-full text-rose-700 font-body font-semibold text-lg
+                         bg-rose-200/50 hover:bg-rose-300/50
+                         transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95
+                         min-h-[50px] min-w-[120px]"
+              >
+                YES
+              </button>
+              <button
+                onClick={handleNo}
+                className="glass px-8 py-4 rounded-full text-rose-700 font-body font-semibold text-lg
+                         hover:bg-white/30 transition-all duration-300 shadow-lg hover:shadow-xl
+                         active:scale-95 min-h-[50px] min-w-[120px]"
+              >
+                NO
+              </button>
+            </div>
+
+            {noButtonMessage && (
+              <p className="mt-4 text-center font-body text-rose-600 text-sm sm:text-base animate-fade-in">
+                {noButtonMessage}
+              </p>
+            )}
           </div>
         </div>
       )}
