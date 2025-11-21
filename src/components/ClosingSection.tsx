@@ -23,6 +23,7 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
 
   // Modal state
   const [showForeverMessage, setShowForeverMessage] = useState(false);
+  const [isFadingOutForever, setIsFadingOutForever] = useState(false);
   const [noButtonMessage, setNoButtonMessage] = useState('');
 
   const wrongPasswordMessages = [
@@ -286,9 +287,22 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
 
       {/* Forever Message Overlay */}
       {showForeverMessage && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/90 transition-opacity duration-1000 animate-fade-in" />
-          <div className="relative z-10 text-center animate-cinematic-fade-in">
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center cursor-pointer"
+          onClick={() => {
+            setIsFadingOutForever(true);
+            setTimeout(() => {
+              setShowForeverMessage(false);
+              setIsFadingOutForever(false);
+              setShowModal(false);
+            }, 1000);
+          }}
+        >
+          <div className={`absolute inset-0 bg-black/90 transition-opacity duration-1000 ${isFadingOutForever ? 'opacity-0' : 'animate-fade-in'}`} />
+          <div
+            className={`relative z-10 text-center ${isFadingOutForever ? 'opacity-0 transition-opacity duration-1000' : 'animate-cinematic-fade-in'}`}
+            onClick={(e) => e.stopPropagation()}
+          >
             <h2 className="font-display text-5xl sm:text-7xl md:text-8xl font-bold text-white text-shadow-glow px-4">
               Forever starts today.
             </h2>
@@ -297,7 +311,7 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
       )}
 
       {/* Modal */}
-      {showModal && (
+      {showModal && !showForeverMessage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
           {/* Backdrop */}
           <div
