@@ -29,7 +29,6 @@ export default function ClosingSection({ onConfetti }: ClosingSectionProps) {
   const wrongPasswordMessages = [
     'nah try again 💀',
     'that\'s not the right option 😭',
-    'fake button btw',
     'I\'ll wait…',
   ];
 
