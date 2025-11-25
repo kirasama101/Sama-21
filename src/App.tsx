@@ -11,7 +11,7 @@ function App() {
 
   const handleMusicToggle = () => {
     if (!audioRef.current) {
-      audioRef.current = new Audio('https://cdn.pixabay.com/download/audio/2025/09/23/audio_d56f601bed.mp3');
+      audioRef.current = new Audio('https://raw.githubusercontent.com/kirasama101/bday-music/refs/heads/main/song.mp3');
       audioRef.current.loop = true;
       audioRef.current.volume = 0.3;
     }
